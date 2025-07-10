@@ -1,0 +1,93 @@
+{
+  "users": [
+    {
+      "id": "0",
+      "name": "First User",
+      "phone": "000-0000-000-000",
+      "email": "someemailaddress@gmail.com",
+      "location": {
+        "longitude": 0,
+        "latitude": 0,
+        "name": "Some Location"
+      }
+    },
+    {
+      "id": "1",
+      "name": "Another User",
+      "phone": "000-0000-000-000",
+      "email": "someemailaddress@gmail.com",
+      "location": {
+        "longitude": 0,
+        "latitude": 0,
+        "name": "Some Location"
+      }
+    },
+    {
+      "id": "2",
+      "name": "Third User",
+      "phone": "000-0000-000-000",
+      "email": "someemailaddress@gmail.com",
+      "location": {
+        "longitude": 0,
+        "latitude": 0,
+        "name": "Some Location"
+      }
+    }
+  ],
+  "orders": [
+    {
+      "id": "11b4f4af-ba54-4ffd-9642-f5715ae56c69",
+      "description": "Send this bag to my mum it contains antique items",
+      "weight": 10,
+      "dimentions": {
+        "length": 100,
+        "width": 180,
+        "height": 10
+      },
+      "type": "Fridgile",
+      "shipment_type": "Standard",
+      "client_id": 1,
+      "delivery_location": {
+        "longitude": 1.009,
+        "latitude": 26.9,
+        "name": "Nairobi-Kisii Stage"
+      }
+    },
+    {
+      "id": "2850cb6e-2702-4435-8fae-ddc728897add",
+      "description": "This is a 1990 stove switching storage location",
+      "weight": 30,
+      "dimentions": {
+        "length": 13,
+        "width": 30,
+        "height": 70
+      },
+      "type": "Perishable",
+      "shipment_type": "Same Day",
+      "client_id": 1,
+      "delivery_location": {
+        "longitude": 1.009,
+        "latitude": 26.9,
+        "name": "Nyeri-Nairobi Stage"
+      }
+    },
+    {
+      "id": "e48f7dbd-a400-48bd-89f0-8e4d26022f98",
+      "description": "New Item bought for my mother back in the country side",
+      "weight": 130,
+      "dimentions": {
+        "length": 156,
+        "width": 30,
+        "height": 870
+      },
+      "type": "Normal",
+      "shipment_type": "Express",
+      "client_id": 0,
+      "delivery_location": {
+        "longitude": -1.342,
+        "latitude": 21.0829,
+        "name": "Nyeri-Nairobi Stage"
+      }
+    }
+  ]
+}
