@@ -2,13 +2,19 @@ from fastapi import APIRouter
 
 from models.order_model import Order
 from user_order_app.models.base_response_model import BaseAPIResponse
-from user_order_app.services.order_service import create_new_order, delete_order, get_all_orders, update_order
+from user_order_app.services.order_service import create_new_order, delete_order, get_all_orders, get_order_by_id, update_order
 
 router = APIRouter()
 
 @router.get("/", response_model=BaseAPIResponse)
 def getOrders():
     return get_all_orders()
+
+@router.get("/{userId}", response_model=BaseAPIResponse)
+def getOrderById(userId:str):
+    return get_order_by_id(
+        userId=userId
+    )
 
 @router.post("/", response_model=BaseAPIResponse)
 def createOrder(request: Order):
