@@ -2,12 +2,13 @@ from starlette.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_502_BAD_GATEWAY
 import requests
 
  
+from user_order_app.core.config import BASE_URL
 from user_order_app.error.error_handler import get_error_response
 from user_order_app.utils.network_response import success_response
 from user_order_app.models.order_model import Order
 from user_order_app.models.base_response_model import BaseAPIResponse
 
-baseUrl = "http://localhost:3000"
+baseUrl = str(BASE_URL)
 def get_all_orders() -> BaseAPIResponse:
     try:
         response = requests.get(baseUrl+"/orders")
@@ -18,7 +19,7 @@ def get_all_orders() -> BaseAPIResponse:
         data = response.json()
         print("👨🏾‍🍳 Orders: ", data)
         return success_response(
-            message="Request successful!",
+            message="✅ Orders fetched successful!",
             data={ "orders":   data },
             status_code=HTTP_200_OK
         )
@@ -27,6 +28,23 @@ def get_all_orders() -> BaseAPIResponse:
         print("Error fetching data:", str(e))
         return get_error_response(HTTP_502_BAD_GATEWAY)
 
+def get_order_by_id(userId: str) -> BaseAPIResponse:
+    try:
+        response = requests.get(baseUrl+"/orders/"+userId)
+        if(response.status_code > 299):
+            return get_error_response(response.status_code)
+        response.raise_for_status
+
+        data = response.json()
+        print("✅ Order fetched successfully: ", data)
+        return success_response(
+            message="✅ Order fetched successfully!",
+            data=data
+        )
+    except requests.exceptions.RequestException as e:
+        print("❌ Error fetching order: ", str(e))
+        return get_error_response(502)
+    
 def create_new_order(request: Order)  -> BaseAPIResponse:
     try:
         response = requests.post(baseUrl+"/orders", json=request.model_dump(mode="json"))
@@ -37,7 +55,7 @@ def create_new_order(request: Order)  -> BaseAPIResponse:
         data = response.json()
         print("🆕 Record: ", data)
         return success_response(
-            message="Record created successfully!",
+            message="✅ Record created successfully!",
             data=data,
             status_code=HTTP_201_CREATED
         )
@@ -56,7 +74,7 @@ def update_order(orderId: str, request: Order) -> BaseAPIResponse:
         data = response.json()
         print("⬆️ Record Updated: ", data)      
         return success_response(
-            message="Record updated successfully!",
+            message="✅ Record updated successfully!",
             data=data,
             status_code=HTTP_200_OK
         )
@@ -74,7 +92,7 @@ def delete_order(orderId: str) -> BaseAPIResponse:
         data = response.json()
         print("❌ Deleted Record: ", data)
         return success_response(
-            message="Record deleted successfully!",
+            message="✅ Record deleted successfully!",
             data=None,
             status_code=HTTP_200_OK
         )

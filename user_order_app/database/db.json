@@ -1,58 +1,32 @@
 {
   "users": [
     {
-      "id": "0",
-      "name": "First User",
-      "phone": "000-0000-000-000",
-      "email": "someemailaddress@gmail.com",
+      "id": "18652bf7-b97c-401e-a976-c406e8883e31",
+      "name": "Test User1",
+      "phone": "254715438186",
+      "email": "testuserone@domain.com",
+      "password": "$2b$12$Z50ZRDL08tO3VxwEffqyJuQ5Eps.ZahsoTFk4n8pNCGEE2o2Dbfme",
+      "identity": "21652434",
+      "role": "System Admin",
       "location": {
-        "longitude": 0,
-        "latitude": 0,
-        "name": "Some Location"
-      }
-    },
-    {
-      "id": "1",
-      "name": "Another User",
-      "phone": "000-0000-000-000",
-      "email": "someemailaddress@gmail.com",
-      "location": {
-        "longitude": 0,
-        "latitude": 0,
-        "name": "Some Location"
-      }
-    },
-    {
-      "id": "2",
-      "name": "Third User",
-      "phone": "000-0000-000-000",
-      "email": "someemailaddress@gmail.com",
-      "location": {
-        "longitude": 0,
-        "latitude": 0,
-        "name": "Some Location"
+        "longitude": 1.2453,
+        "latitude": 12.9304,
+        "name": "77 Nashville Park"
+      },
+      "verification": {
+        "isPhoneVerified": false,
+        "isEmailVerified": false,
+        "identityVerified": false,
+        "documents": [
+          {
+            "url": "",
+            "description": ""
+          }
+        ]
       }
     }
   ],
   "orders": [
-    {
-      "id": "11b4f4af-ba54-4ffd-9642-f5715ae56c69",
-      "description": "Send this bag to my mum it contains antique items",
-      "weight": 10,
-      "dimentions": {
-        "length": 100,
-        "width": 180,
-        "height": 10
-      },
-      "type": "Fridgile",
-      "shipment_type": "Standard",
-      "client_id": 1,
-      "delivery_location": {
-        "longitude": 1.009,
-        "latitude": 26.9,
-        "name": "Nairobi-Kisii Stage"
-      }
-    },
     {
       "id": "2850cb6e-2702-4435-8fae-ddc728897add",
       "description": "This is a 1990 stove switching storage location",
