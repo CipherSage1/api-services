@@ -15,7 +15,6 @@ def generate_jwt_token(user_id: str) -> str:
     token = jwt.encode(payload, str(JWT_SECRET_KEY), algorithm=str(JWT_ALGORITHM))
     return token
 
-
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class Hasher():

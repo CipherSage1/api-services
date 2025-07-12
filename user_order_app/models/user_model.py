@@ -1,6 +1,6 @@
 from enum import Enum
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Optional
 from uuid import uuid4, UUID
 
 class Location(BaseModel):
@@ -34,6 +34,17 @@ class User(BaseModel):
     role: Role
     location: Location
     verification: Verification
+    
+# Assuming Role, Location, Verification are defined elsewhere
+class UserPatch(BaseModel):
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    password: Optional[str] = None
+    identity: Optional[str] = None
+    role: Optional[Role] = None
+    location: Optional[Location] = None
+    verification: Optional[Verification] = None
 
 class UserListResponse(BaseModel):
     users: List[User]
