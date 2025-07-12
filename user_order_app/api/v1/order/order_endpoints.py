@@ -1,6 +1,6 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 
-from models.order_model import Order
+from models.order_model import Order, OrderUpdate
 from user_order_app.models.base_response_model import BaseAPIResponse
 from user_order_app.services.order_service import create_new_order, delete_order, get_all_orders, get_order_by_id, update_order
 
@@ -17,13 +17,14 @@ def getOrderById(userId:str):
     )
 
 @router.post("/", response_model=BaseAPIResponse)
-def createOrder(request: Order):
+def createOrder(order: Order, request: Request):
+    order.client_id = request.state.user  # type: ignore
     return create_new_order(
-        request=request
+        request=order
     )
 
 @router.patch("/{orderId}", response_model=BaseAPIResponse)
-def updateOrder(orderId: str, order: Order):
+def updateOrder(orderId: str, order: OrderUpdate):
     return update_order(
         orderId=orderId,
         request=order

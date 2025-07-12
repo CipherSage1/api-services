@@ -3,7 +3,7 @@ import requests
 from user_order_app.core.config import BASE_URL
 from user_order_app.error.error_handler import get_error_response
 from user_order_app.models.base_response_model import BaseAPIResponse
-from user_order_app.models.user_model import User
+from user_order_app.models.user_model import User, UserPatch
 from user_order_app.utils.network_response import success_response
 from starlette.status import HTTP_200_OK 
 
@@ -15,7 +15,7 @@ def get_all_users() -> BaseAPIResponse:
     response.raise_for_status()  # Raise error if request failed
 
     data = response.json() 
-    print("👻 Users: ", data)
+    print("👥 Fetching all users...")
     return success_response(
       message="✅ Successfully fetched user",
       data={"users": data},
@@ -30,7 +30,7 @@ def create_user(user: User) -> BaseAPIResponse:
  try:
     response = requests.post(baseUrl+"/users", json=user.model_dump(mode="json"))
     if(response.status_code > 299):
-      return get_error_response(502)
+      return get_error_response(response.status_code)
 
     response.raise_for_status
     data = response.json()
@@ -62,9 +62,10 @@ def get_user_by_id(userId: str) -> BaseAPIResponse:
     print("❌ Error fetching user: ", str(e))
     return get_error_response(502)
 
-def update_user(userId: str, user: User) -> BaseAPIResponse:
+def update_user(userId: str, user: UserPatch) -> BaseAPIResponse:
   try:
-    response = requests.patch(baseUrl+"/users/"+userId, json=user.model_dump(mode="json"))
+    update_data = user.model_dump(exclude_unset=True)
+    response = requests.patch(baseUrl+"/users/"+userId, json=update_data)
     if(response.status_code > 299):
       return get_error_response(response.status_code)
 

@@ -32,8 +32,17 @@ class Order(BaseModel):
     dimentions: Dimentions
     type: OrderType
     shipment_type: ShipmentType
-    client_id: int
+    client_id: Optional[str] = None  # Assuming client_id is a string   
     delivery_location: DeliveryLocation
+
+class OrderUpdate(BaseModel):
+    description: Optional[str] = None
+    weight: Optional[float] = None
+    dimensions: Optional[Dimentions] = None
+    type: Optional[OrderType] = None
+    shipment_type: Optional[ShipmentType] = None
+    client_id: Optional[int] = None
+    delivery_location: Optional[DeliveryLocation] = None
 
 class OrderResponse(BaseModel):
     orders: List[Order]

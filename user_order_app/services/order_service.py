@@ -2,10 +2,10 @@ from starlette.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_502_BAD_GATEWAY
 import requests
 
  
-from user_order_app.core.config import BASE_URL
+from user_order_app.core.config import BASE_URL 
 from user_order_app.error.error_handler import get_error_response
 from user_order_app.utils.network_response import success_response
-from user_order_app.models.order_model import Order
+from user_order_app.models.order_model import Order, OrderUpdate
 from user_order_app.models.base_response_model import BaseAPIResponse
 
 baseUrl = str(BASE_URL)
@@ -47,6 +47,7 @@ def get_order_by_id(userId: str) -> BaseAPIResponse:
     
 def create_new_order(request: Order)  -> BaseAPIResponse:
     try:
+        print("👤 User ID from token in request: ", request.client_id)
         response = requests.post(baseUrl+"/orders", json=request.model_dump(mode="json"))
         if response.status_code > 299:
             return get_error_response(response.status_code)
@@ -64,9 +65,10 @@ def create_new_order(request: Order)  -> BaseAPIResponse:
         print("Error creating new order: ",str(e))
         return get_error_response(HTTP_502_BAD_GATEWAY)
 
-def update_order(orderId: str, request: Order) -> BaseAPIResponse:
+def update_order(orderId: str, request: OrderUpdate) -> BaseAPIResponse:
     try:
-        response = requests.patch(baseUrl+"/orders/"+orderId, json=request.model_dump(mode="json"))
+        update_data = request.model_dump(exclude_unset=True)
+        response = requests.patch(baseUrl+"/orders/"+orderId, json=update_data)
         if response.status_code > 299:
             return get_error_response(response.status_code)
         response.raise_for_status()
