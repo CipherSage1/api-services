@@ -15,3 +15,7 @@ build/
 venv/
 env/
 ENV/
+
+# Ignore Spring Boot config 
+**/application.properties
+**/db.json
