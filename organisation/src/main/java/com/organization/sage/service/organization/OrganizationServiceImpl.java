@@ -1,6 +1,8 @@
 package com.organization.sage.service.organization;
 
 import com.organization.sage.model.organisation.Organization;
+import com.organization.sage.model.user.UserModel;
+import com.organization.sage.service.user.UserService;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -20,10 +22,28 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Value("${BASE_URL}"+"/organizations")
     private String jsonServerUrl;
 
+
+    private final UserService userService;
+
+    public OrganizationServiceImpl(UserService userService) {
+        this.userService = userService;
+    }
+
+
     @Override
     public Organization createOrganization(Organization org) {
         org.setOrganizationId(UUID.randomUUID().toString());
         ResponseEntity<Organization> response = restTemplate.postForEntity(jsonServerUrl, org, Organization.class);
+        Organization responseBody = response.getBody();
+        if (responseBody == null) {
+            throw new RuntimeException("Failed to create organization");
+        }
+         // 🔁 Update user with org ID
+         if (org.getClientId() != null) {
+             UserModel userUpdate = new UserModel();
+             userUpdate.setOrganizationId(responseBody.getOrganizationId().toString());
+             userService.updateUserPartially(org.getClientId(), userUpdate);
+         }
         return response.getBody();
     }
 

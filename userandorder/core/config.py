@@ -14,6 +14,7 @@ JWT_EXPIRATION_MINUTES = int(os.getenv("JWT_EXPIRATION_MINUTES", 60))
 PASSWORD_HASH_KEY = os.getenv("PASSWORD_HASH_KEY")
 API_KEY = os.getenv("API_KEY")
 ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+ORGANIZATION_URL = os.getenv("ORGANIZATION_URL")
 
 # Validate required env vars
 if not BASE_URL:
@@ -32,3 +33,5 @@ if not ENVIRONMENT:
     raise ValueError("ENVIRONMENT is not set. Please check your .env file.")
 if ENVIRONMENT not in ["development", "staging", "production"]:
     raise ValueError("ENVIRONMENT must be either 'development', 'staging' or 'production'. Please check your .env file.") 
+if not ORGANIZATION_URL:
+    raise ValueError("ORGANIZATION_URL is not set. Please check your .env file.")
