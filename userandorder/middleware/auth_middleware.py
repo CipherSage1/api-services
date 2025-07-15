@@ -12,13 +12,19 @@ from userandorder.core.config import API_KEY, JWT_ALGORITHM, JWT_SECRET_KEY
 
 
 API_KEY_PROTECTED_PATHS = [
+    ("/api/v1/users", "POST"),
+    ("/api/v1/users", "GET"),
+    ("/api/v1/users", "PATCH"),
     ("/api/v1/users", "DELETE"),
     ("/api/v1/orders", "POST"),
     ("/api/v1/orders", "GET"),
-    ("/api/v1/orders", "DELETE"),
-    ("/api/v1/users", "PATCH"),
     ("/api/v1/orders", "PATCH"),
-    ("/api/v1/users", "GET")
+    ("/api/v1/orders", "DELETE"),
+    ("/api/v1/organizations","POST"),
+    ("/api/v1/organizations","GET"),
+    ("/api/v1/organizations","PATCH"),
+    ("/api/v1/organizations","DELETE"),
+    ("/api/v1/internal-ops/user-update", "PATCH"),
 ]
 
 TOKEN_PROTECTED_PATHS = [
@@ -27,7 +33,12 @@ TOKEN_PROTECTED_PATHS = [
     ("/api/v1/users", "DELETE"),
     ("/api/v1/orders", "POST"),
     ("/api/v1/orders", "GET"),
+    ("/api/v1/orders", "PATCH"),
     ("/api/v1/orders", "DELETE"),
+    ("/api/v1/organizations","POST"),
+    ("/api/v1/organizations","GET"),
+    ("/api/v1/organizations","PATCH"),
+    ("/api/v1/organizations","DELETE"),
 ]
 
 class AuthMiddleware(BaseHTTPMiddleware):
