@@ -18,7 +18,7 @@ import com.organization.sage.model.organisation.Organization;
 import com.organization.sage.service.organization.OrganizationService;
 
 @RestController
-@RequestMapping("/api/v1/organizations")
+@RequestMapping("/api/organizations")
 public class OrganizationController {
 
     private final OrganizationService organizationService;
