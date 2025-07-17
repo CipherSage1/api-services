@@ -3,7 +3,6 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from starlette.status import HTTP_400_BAD_REQUEST
 
-
 from userandorder.api.v1.user.user_endpoints import router as user_router
 from userandorder.api.v1.order.order_endpoints import router as order_router
 from userandorder.api.v1.auth.authentication import router as authentication_route

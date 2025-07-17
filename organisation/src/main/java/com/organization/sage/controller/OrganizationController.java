@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.organization.sage.model.ApiResponse;
 import com.organization.sage.model.organisation.Organization;
 import com.organization.sage.service.organization.OrganizationService;
 
@@ -28,7 +29,7 @@ public class OrganizationController {
     }
 
     @PostMapping
-    public ResponseEntity<Organization> create(@RequestBody Organization org) {
+    public ResponseEntity<ApiResponse<Organization>> create(@RequestBody Organization org) {
         return ResponseEntity.ok(organizationService.createOrganization(org));
     }
 

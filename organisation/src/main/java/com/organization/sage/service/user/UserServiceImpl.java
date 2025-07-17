@@ -25,18 +25,16 @@ public class UserServiceImpl implements UserService {
     private String USER_ORDER_URL_API_KEY;
 
     public ApiResponse<UserModel> updateUserPartially(String id, UserModel updates) {
-        String baseUrl = USER_ORDER_URL + "/api/v1/internal-ops/user-update" + id;
+        String baseUrl = USER_ORDER_URL + "/api/v1/internal-ops/user-update/" + id;
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        // 🔑 Add override header
-        headers.set("X-HTTP-Method-Override", "PATCH");
+        headers.setContentType(MediaType.APPLICATION_JSON); 
         headers.set("Api_Key",  USER_ORDER_URL_API_KEY);
         HttpEntity<UserModel> requestEntity = new HttpEntity<>(updates, headers);
 
         ResponseEntity<ApiResponse<UserModel>> response = restTemplate.exchange(
                 baseUrl,
-                HttpMethod.POST,
+                HttpMethod.PUT,
                 requestEntity,
                 new ParameterizedTypeReference<ApiResponse<UserModel>>() {
                 });
