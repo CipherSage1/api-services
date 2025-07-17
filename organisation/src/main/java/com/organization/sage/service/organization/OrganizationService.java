@@ -3,11 +3,12 @@ package com.organization.sage.service.organization;
 import java.util.List;
 import java.util.Map;
 
+import com.organization.sage.model.ApiResponse;
 import com.organization.sage.model.organisation.Organization;
 
 public interface OrganizationService {
 
-	public Organization createOrganization(Organization org);
+	public ApiResponse<Organization> createOrganization(Organization org);
 	
 	public List<Organization> getAllOrganizations();
 	

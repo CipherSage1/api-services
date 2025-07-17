@@ -1,8 +1,14 @@
 package com.organization.sage.service.organization;
 
+import com.organization.sage.error.OrganizationException;
+import com.organization.sage.model.ApiResponse;
+import com.organization.sage.model.LogType;
 import com.organization.sage.model.organisation.Organization;
 import com.organization.sage.model.user.UserModel;
 import com.organization.sage.service.user.UserService;
+import com.organization.sage.utility.Logger;
+
+import lombok.extern.java.Log;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -31,20 +37,33 @@ public class OrganizationServiceImpl implements OrganizationService {
 
 
     @Override
-    public Organization createOrganization(Organization org) {
-        org.setOrganizationId(UUID.randomUUID().toString());
+    public ApiResponse<Organization> createOrganization(Organization org) {
+
+        if (org.getClientId() != null) {
+            String checkUrl = jsonServerUrl + "?clientId=" + org.getClientId();
+            ResponseEntity<Organization[]> existingOrgsResponse = restTemplate.getForEntity(checkUrl,
+                    Organization[].class);
+            Organization[] existingOrgs = existingOrgsResponse.getBody();
+            if (existingOrgs != null && existingOrgs.length > 0) {
+                throw new OrganizationException(409, "Client already has an organization registered!");
+            }
+        }
+    
+        org.setOrganizationId(new Organization().getOrganizationId());
         ResponseEntity<Organization> response = restTemplate.postForEntity(jsonServerUrl, org, Organization.class);
         Organization responseBody = response.getBody();
         if (responseBody == null) {
             throw new RuntimeException("Failed to create organization");
         }
-         // 🔁 Update user with org ID
-         if (org.getClientId() != null) {
-             UserModel userUpdate = new UserModel();
-             userUpdate.setOrganizationId(responseBody.getOrganizationId().toString());
-             userService.updateUserPartially(org.getClientId(), userUpdate);
-         }
-        return response.getBody();
+
+        Logger.print("ORG_RESPONSE: "+responseBody, LogType.SUCCESS);
+
+        return new ApiResponse<Organization>(
+                HttpStatus.CREATED.value(),
+                "✅ Organization created successfully",
+                false,
+                responseBody
+        );
     }
 
     @Override
