@@ -21,15 +21,15 @@ public class UserServiceImpl implements UserService {
     @Value("${USER_ORDER_URL}")
     private String USER_ORDER_URL;
 
-    @Value("${USER_ORDER_URL_API_KEY}")
-    private String USER_ORDER_URL_API_KEY;
+    @Value("${SERVER_SERVICE_KEY}")
+    private String SERVER_SERVICE_KEY;
 
     public ApiResponse<UserModel> updateUserPartially(String id, UserModel updates) {
         String baseUrl = USER_ORDER_URL + "/api/v1/internal-ops/user-update/" + id;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON); 
-        headers.set("Api_Key",  USER_ORDER_URL_API_KEY);
+        headers.set("Api_Key",  SERVER_SERVICE_KEY);
         HttpEntity<UserModel> requestEntity = new HttpEntity<>(updates, headers);
 
         ResponseEntity<ApiResponse<UserModel>> response = restTemplate.exchange(

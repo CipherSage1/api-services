@@ -1,12 +1,11 @@
 from typing import List, Optional
 from pydantic import BaseModel
-
+from userandorder.models.pricing import Pricing
 
 class Branch(BaseModel):
     branchName: str
     latitude: float
     longitude: float
-
 
 class Organization(BaseModel):
     companyName: str

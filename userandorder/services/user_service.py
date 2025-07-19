@@ -50,7 +50,6 @@ def get_user_by_id(userId: str) -> BaseAPIResponse:
     response = requests.get(baseUrl+"/users/"+userId)
     if(response.status_code > 299):
       return get_error_response(response.status_code)
-    
     response.raise_for_status
 
     data = response.json()
@@ -62,6 +61,20 @@ def get_user_by_id(userId: str) -> BaseAPIResponse:
   except requests.exceptions.RequestException as e:
     print("❌ Error fetching user: ", str(e))
     return get_error_response(502)
+
+
+def get_user_by_id_internal(userId: str) -> int:
+  try:
+    response = requests.get(baseUrl+"/users/"+userId)
+    if(response.status_code > 299):
+      return response.status_code
+    data = response.json()
+    print("✅ User fetched successfully: ", data)
+    return 200
+  except requests.exceptions.RequestException as e:
+    print("❌ Error fetching user: ", str(e))
+    return 502
+
 
 def update_user(userId: str, user: UserPatch) -> BaseAPIResponse:
   try:

@@ -1,7 +1,10 @@
+from unittest.mock import Base
 from fastapi import APIRouter, Request
 from userandorder.models.base_response_model import BaseAPIResponse
 from userandorder.models.organisation.organization import Organization
-from userandorder.services.organization_service import create_organization
+from userandorder.models.organisation.pricing_request import PricingRequest
+from userandorder.models.pricing import Pricing
+from userandorder.services.organization_service import create_organization, update_organization
 
 router = APIRouter()
 
@@ -10,3 +13,11 @@ def createOrganization(organization: Organization, request: Request) -> BaseAPIR
     organization.clientId = request.state.user
     print("Creating organization for user", organization.clientId)
     return create_organization(organization)
+
+
+@router.patch("/pricing", response_model=BaseAPIResponse)
+def updateOrganization(pricing: Pricing, request: Request) -> BaseAPIResponse:
+    return update_organization(priceRequest= PricingRequest(
+        userId=request.state.user,
+        pricing=pricing
+    ))
