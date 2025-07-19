@@ -3,22 +3,22 @@ package com.organization.sage.service.organization;
 import com.organization.sage.error.OrganizationException;
 import com.organization.sage.model.ApiResponse;
 import com.organization.sage.model.LogType;
+import com.organization.sage.model.PricingRequest;
 import com.organization.sage.model.organisation.Organization;
-import com.organization.sage.model.user.UserModel;
+import com.organization.sage.model.payment.Pricing; 
 import com.organization.sage.service.user.UserService;
 import com.organization.sage.utility.Logger;
-
-import lombok.extern.java.Log;
+ 
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.Map; 
 
 @Service
 public class OrganizationServiceImpl implements OrganizationService {
@@ -67,15 +67,27 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public List<Organization> getAllOrganizations() {
+    public ApiResponse<List<Organization>> getAllOrganizations() {
         ResponseEntity<Organization[]> response = restTemplate.getForEntity(jsonServerUrl, Organization[].class);
-        return Arrays.asList(response.getBody());
+        return new ApiResponse<>(
+                HttpStatus.OK.value(),
+                "✅ Organizations fetched successfully",
+                false,
+                Arrays.asList(response.getBody())
+        );
     }
 
     @Override
-    public Organization getOrganizationById(String id) {
+    public ApiResponse<Organization> getOrganizationById(String id) {
         String url = jsonServerUrl + "/" + id;
-        return restTemplate.getForObject(url, Organization.class);
+        var res = restTemplate.getForObject(url, Organization.class);
+
+        return new ApiResponse<Organization>(
+                HttpStatus.OK.value(),
+                "✅ Organization fetched successfully",
+                false,
+                res
+        );
     }
 
     @Override
@@ -97,5 +109,57 @@ public class OrganizationServiceImpl implements OrganizationService {
     public void deleteOrganization(String id) {
         String url = jsonServerUrl + "/" + id;
         restTemplate.delete(url);
+    }
+
+    @Override
+    public ApiResponse<Organization> createPricing(PricingRequest pricing) {
+        if (pricing.getUserId() != null) {
+            String checkUrl = jsonServerUrl + "?clientId=" + pricing.getUserId();
+            ResponseEntity<Organization[]> existingOrgsResponse = restTemplate.getForEntity(checkUrl,
+                    Organization[].class);
+            Organization[] existingOrgs = existingOrgsResponse.getBody();
+            if (existingOrgs != null && existingOrgs.length > 0) {
+        
+                Organization org = existingOrgs[0];
+               
+                if (org.getPricing() == null) {
+                    var price_array = new ArrayList<Pricing>();
+                    price_array.add(pricing.getPricing());
+                    org.setPricing(price_array);
+                    Logger.print("price_array: " + price_array.toString(), LogType.SUCCESS);
+                } else {
+
+                    var isUpdate = false;
+
+                    for (Pricing price : org.getPricing()) {
+                        if (price.getFromLocation().equalsIgnoreCase(pricing.getPricing().getFromLocation()) &&
+                                pricing.getPricing().getToLocation()
+                                        .equalsIgnoreCase(pricing.getPricing().getToLocation())) {
+                            price.setShipmentTypesPricing(pricing.getPricing().getShipmentTypesPricing());
+                            price.setparcelTypesPricing(pricing.getPricing().getparcelTypesPricing());
+                            isUpdate = true;
+                        }
+                    }
+                    if (!isUpdate) {
+                        org.getPricing().add(pricing.getPricing());
+                    }
+
+                }
+                restTemplate.put(jsonServerUrl + "/" + org.getOrganizationId(), org);
+                
+                Logger.print("price updater for org : "+org, LogType.SUCCESS);
+                return new ApiResponse<Organization>(
+                        HttpStatus.OK.value(),
+                        "✅ Pricing created successfully",
+                        false,
+                        org
+                );
+            }
+            else {
+                throw new OrganizationException(404, "Client does not have an organization registered!");
+            }
+        } else {
+            throw new OrganizationException(400, "User ID is required to create pricing");
+        }
     }
 }

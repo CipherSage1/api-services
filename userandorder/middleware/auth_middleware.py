@@ -1,4 +1,5 @@
 
+from http.client import HTTPException
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
@@ -7,7 +8,8 @@ from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN
 
 from jose import JWTError, jwt
 
-from userandorder.core.config import API_KEY, JWT_ALGORITHM, JWT_SECRET_KEY 
+from userandorder.core.config import API_KEY, JWT_ALGORITHM, JWT_SECRET_KEY
+from userandorder.services.user_service import get_user_by_id_internal 
 
 
 
@@ -81,11 +83,33 @@ class JWTAuthMiddleware(BaseHTTPMiddleware):
                     )
                 
                 token = auth_header.split(" ")[1]
-
                 try:
                     payload = jwt.decode(token, str(JWT_SECRET_KEY), algorithms=[str(JWT_ALGORITHM)])
-                    request.state.user = payload["sub"]
-                
+                    try:
+                        response = get_user_by_id_internal(payload["sub"])
+                        if response == 200:
+                            request.state.user = payload["sub"]
+                        else:
+                            return JSONResponse(
+                                status_code=HTTP_401_UNAUTHORIZED,
+                                content={
+                                    "status": HTTP_401_UNAUTHORIZED,
+                                    "message": "Unauthorized. Invalid or expired token.",
+                                    "error": True,
+                                    "data": None
+                                }
+                            )
+                    except HTTPException as e:
+                        return JSONResponse(
+                            status_code=HTTP_401_UNAUTHORIZED,
+                            content={
+                            "status": HTTP_401_UNAUTHORIZED,
+                            "message": "Unauthorized. Invalid or expired token.",
+                            "error": True,
+                            "data": None
+                        }
+                        )
+                    # request.state.user = payload["sub"]
                 except JWTError as e:
                     print("❌ Error etractiong token: ", str(e))
                     return JSONResponse(
