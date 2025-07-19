@@ -9,8 +9,8 @@ import com.organization.sage.model.payment.Pricing;
 
 public class Organization {
 
-    @JsonProperty("id")
-    private String organizationId;
+   @JsonProperty("id")
+    private String id;
 
     private String companyName;
 
@@ -25,18 +25,19 @@ public class Organization {
     private String companyLogo;
 
     private ArrayList<Pricing> pricing;
+ 
 
     public Organization() {
-        this.organizationId = UUID.randomUUID().toString();
+        this.id = UUID.randomUUID().toString();
     }
 
     // Getters and Setters
     public String getOrganizationId() {
-        return organizationId;
+        return id;
     }
 
     public void setOrganizationId(String organizationId) {
-        this.organizationId = organizationId;
+        this.id = organizationId;
     }
 
     public String getCompanyName() {
@@ -98,7 +99,7 @@ public class Organization {
     @Override
     public String toString() {
         return "Organization { " +
-                "organizationId: '" + organizationId + '\'' +
+                "organizationId: '" + id + '\'' +
                 ", companyName: '" + companyName + '\'' +
                 ", companyLogo: '" + companyLogo + '\'' +
                 ", branches: " + branches +

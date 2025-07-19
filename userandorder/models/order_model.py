@@ -9,11 +9,12 @@ class OrderType(str, Enum):
     FRIDGILE = "Fragile"
     NORMAL = "Normal"
 
+
 class ShipmentType(str, Enum):
     STANDARD = "Standard"
     EXPRESS = "Express"
     OVERNIGHT = "Overnight"
-    SAMEDAY = "Same Day"
+    SAMEDAY = "SameDay"
 
 class DeliveryLocation(BaseModel):
     longitude: float

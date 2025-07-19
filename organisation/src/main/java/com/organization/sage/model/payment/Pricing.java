@@ -7,25 +7,25 @@ import com.organization.sage.model.organisation.ParcelType;
 import com.organization.sage.model.organisation.ShipmentType;
 
 public class Pricing {
-    private String from;
-    private String to;
+    private String fromLocation; 
+    private String toLocation;
     private Map<ShipmentType, BigDecimal> shipmentTypesPricing;
     private Map<ParcelType, BigDecimal> parcelTypesPricing;
 
-    public String getFrom() {
-        return from;
+    public String getFromLocation() {
+        return fromLocation;
     }
 
-    public void setFrom(String from) {
-        this.from = from;
+    public void setFrom(String fromLocation) {
+        this.fromLocation = fromLocation;
     }
 
-    public String getTo() {
-        return to;
+    public String getToLocation() {
+        return toLocation;
     }
 
-    public void setTo(String to) {
-        this.to = to;
+    public void setTo(String toLocation) {
+        this.toLocation = toLocation;
     }
 
     public Map<ShipmentType, BigDecimal> getShipmentTypesPricing() {
@@ -47,8 +47,8 @@ public class Pricing {
     @Override
     public String toString() {
         return "{ " +
-                "from: '" + from + '\'' +
-                ", to: '" + to + '\'' +
+                "from: '" + fromLocation + '\'' +
+                ", to: '" + toLocation + '\'' +
                 ", shipmentTypesPricing: " + shipmentTypesPricing +
                 ", parcelTypesPricing: " + parcelTypesPricing +
                 '}';

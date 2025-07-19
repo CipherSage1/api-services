@@ -34,7 +34,7 @@ class User(BaseModel):
     role: Optional[Role]= None  # ✅ Optional field for role
     location: Optional[Location] = None  # ✅ Optional field for location
     verification: Optional[Verification] = None  # ✅ Optional field for verification
-    organisationId: Optional[UUID] = None  # ✅ Optional field for organization ID
+    organizationId: Optional[str] = None  # ✅ Optional field for organization ID
     
 # Assuming Role, Location, Verification are defined elsewhere
 class UserPatch(BaseModel):
@@ -46,7 +46,7 @@ class UserPatch(BaseModel):
     role: Optional[Role] = None
     location: Optional[Location] = None
     verification: Optional[Verification] = None
-    organisationId: Optional[UUID] = None
+    organizationId: Optional[str] = None
 class UserListResponse(BaseModel):
     users: List[User]
     
