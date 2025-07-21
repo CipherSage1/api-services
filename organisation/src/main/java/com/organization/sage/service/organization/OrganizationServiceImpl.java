@@ -3,10 +3,11 @@ package com.organization.sage.service.organization;
 import com.organization.sage.error.OrganizationException;
 import com.organization.sage.model.ApiResponse;
 import com.organization.sage.model.LogType;
-import com.organization.sage.model.PricingRequest;
+import com.organization.sage.model.organisation.Branch;
+import com.organization.sage.model.organisation.BranchRequest;
 import com.organization.sage.model.organisation.Organization;
-import com.organization.sage.model.payment.Pricing; 
-import com.organization.sage.service.user.UserService;
+import com.organization.sage.model.organisation.PricingRequest;
+import com.organization.sage.model.payment.Pricing;
 import com.organization.sage.utility.Logger;
  
 
@@ -27,14 +28,6 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Value("${BASE_URL}"+"/organizations")
     private String jsonServerUrl;
-
-
-    private final UserService userService;
-
-    public OrganizationServiceImpl(UserService userService) {
-        this.userService = userService;
-    }
-
 
     @Override
     public ApiResponse<Organization> createOrganization(Organization org) {
@@ -114,23 +107,19 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public ApiResponse<Organization> createPricing(PricingRequest pricing) {
         if (pricing.getUserId() != null) {
-            String checkUrl = jsonServerUrl + "?clientId=" + pricing.getUserId();
-            ResponseEntity<Organization[]> existingOrgsResponse = restTemplate.getForEntity(checkUrl,
-                    Organization[].class);
+
+            ResponseEntity<Organization[]> existingOrgsResponse = getCurrentOrganizations(pricing.getUserId());
             Organization[] existingOrgs = existingOrgsResponse.getBody();
             if (existingOrgs != null && existingOrgs.length > 0) {
-        
                 Organization org = existingOrgs[0];
-               
+
                 if (org.getPricing() == null) {
                     var price_array = new ArrayList<Pricing>();
                     price_array.add(pricing.getPricing());
                     org.setPricing(price_array);
                     Logger.print("price_array: " + price_array.toString(), LogType.SUCCESS);
                 } else {
-
                     var isUpdate = false;
-
                     for (Pricing price : org.getPricing()) {
                         if (price.getFromLocation().equalsIgnoreCase(pricing.getPricing().getFromLocation()) &&
                                 pricing.getPricing().getToLocation()
@@ -143,23 +132,126 @@ public class OrganizationServiceImpl implements OrganizationService {
                     if (!isUpdate) {
                         org.getPricing().add(pricing.getPricing());
                     }
-
                 }
+
                 restTemplate.put(jsonServerUrl + "/" + org.getOrganizationId(), org);
-                
-                Logger.print("price updater for org : "+org, LogType.SUCCESS);
+                Logger.print("price updater for org : " + org, LogType.SUCCESS);
                 return new ApiResponse<Organization>(
                         HttpStatus.OK.value(),
                         "✅ Pricing created successfully",
                         false,
-                        org
-                );
-            }
-            else {
+                        org);
+            } else {
                 throw new OrganizationException(404, "Client does not have an organization registered!");
             }
         } else {
             throw new OrganizationException(400, "User ID is required to create pricing");
         }
     }
+
+    @Override
+    public ApiResponse<Organization> updateBranches(BranchRequest request) {
+        if (request.getUserId() != null) {
+            ResponseEntity<Organization[]> existingOrgsResponse = getCurrentOrganizations(request.getUserId());
+            Organization[] existingOrgs = existingOrgsResponse.getBody();
+
+            if ((existingOrgs != null && existingOrgs.length > 0)) {
+                Organization org = existingOrgs[0];
+                if (org.getbranches() == null) {
+                    var branch_array = new ArrayList<Branch>();
+                    branch_array.add(request.getBranch());
+                    org.setbranches(branch_array);
+                    Logger.print("New Branch added: " + branch_array.toString(), LogType.SUCCESS);
+                } else {
+                    var isUpdate = false;
+                    for (Branch branch : org.getbranches()) {
+                        //update branch if branch id is supplied
+                        if (request.getBranch().getBranchId() != null) {
+                            if (branch.getBranchId().equalsIgnoreCase(request.getBranch().getBranchId())) {
+                                branch.setBranchName(request.getBranch().getBranchName());
+                                branch.setLatitude(request.getBranch().getLatitude());
+                                branch.setLongitude(request.getBranch().getLongitude());
+                                isUpdate = true;
+                                Logger.print("Old Branch Updated: " + branch.toString(), LogType.SUCCESS);
+                            }
+                        }
+                    }
+                    if (!isUpdate) {
+                        org.getbranches().add(request.getBranch());
+                    }
+                }
+                restTemplate.put(jsonServerUrl + "/" + org.getOrganizationId(), org);
+                Logger.print("Branch updated for org : " + org, LogType.SUCCESS);
+                return new ApiResponse<Organization>(
+                        HttpStatus.OK.value(),
+                        "✅ Branch has been updated successfully!",
+                        false,
+                        org);
+            } else {
+                throw new OrganizationException(404, "Client does not have an organization registered!");
+            }
+        } else {
+            throw new OrganizationException(400, "User ID is required to edit branch!");
+        }
+    }
+   
+    private ResponseEntity<Organization[]> getCurrentOrganizations(String requestId) {
+        return restTemplate.getForEntity(getCheckUrl(requestId),
+                Organization[].class);
+    }
+
+    private String getCheckUrl(String requestId) {
+        return jsonServerUrl + "?clientId=" + requestId;
+    }
+
+    @Override
+    public ApiResponse<Branch[]> getAllBranches(String organizationId) {
+        var response = getOrganizationById(organizationId);
+        if (response.getStatus() == HttpStatus.OK.value()) {
+            List<Branch> branchesList = response.getData().getbranches();
+            Branch[] branchesArray = branchesList != null ? branchesList.toArray(new Branch[0]) : new Branch[0];
+            return new ApiResponse<Branch[]>(
+                HttpStatus.OK.value(),
+                "✅ Branches retrieved successfully!",
+                false,
+                branchesArray
+            );
+        } else {
+            return new ApiResponse<Branch[]>(
+                response.getStatus(),
+                "❌ Failed to retrieve your branches!",
+                true,
+                null
+            );
+        }
+    }
+
+    @Override
+    public ApiResponse<Branch> getBranchById(String branchId, String organizationId) {
+        var response = getOrganizationById(organizationId);
+        if (response.getStatus() == HttpStatus.OK.value()) {
+            for (Branch branch : response.getData().getbranches()) {
+                if (branch.getBranchId().equals(branchId)) {
+                    return new ApiResponse<Branch>(
+                            response.getStatus(),
+                            "✅ Branch retrieved successfully!",
+                            false,
+                            branch);
+                }
+            }
+            // Branch not found
+            return new ApiResponse<Branch>(
+                    HttpStatus.NOT_FOUND.value(),
+                    "❌ Branch not found!",
+                    true,
+                    null);
+        } else {
+            return new ApiResponse<Branch>(
+                response.getStatus(),
+                "❌ Failed to verify your organization!",
+                true,
+                null);
+        }
+    }
+    
 }

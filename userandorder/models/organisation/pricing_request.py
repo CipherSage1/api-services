@@ -1,5 +1,5 @@
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from userandorder.models.pricing import Pricing  
 
 class PricingRequest(BaseModel):

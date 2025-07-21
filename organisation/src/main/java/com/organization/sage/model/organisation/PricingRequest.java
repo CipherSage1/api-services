@@ -1,4 +1,4 @@
-package com.organization.sage.model;
+package com.organization.sage.model.organisation;
 
 import com.organization.sage.model.payment.Pricing;
 
