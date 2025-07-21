@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.organization.sage.model.ApiResponse;
-import com.organization.sage.model.PricingRequest;
-import com.organization.sage.model.organisation.Organization; 
+import com.organization.sage.model.organisation.Branch;
+import com.organization.sage.model.organisation.BranchRequest;
+import com.organization.sage.model.organisation.Organization;
+import com.organization.sage.model.organisation.PricingRequest;
 import com.organization.sage.service.organization.OrganizationService;
 
 @RestController
@@ -30,7 +32,7 @@ public class OrganizationController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Organization>> create(@RequestBody Organization org) {
+    public ResponseEntity<ApiResponse<Organization>> createOrganization(@RequestBody Organization org) {
         return ResponseEntity.ok(organizationService.createOrganization(org));
     }
 
@@ -40,25 +42,36 @@ public class OrganizationController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Organization>>> getAll() {
+    public ResponseEntity<ApiResponse<List<Organization>>> getAllOrganizations() {
         return ResponseEntity.ok(organizationService.getAllOrganizations());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Organization>> getById(@PathVariable String id) {
+    public ResponseEntity<ApiResponse<Organization>> getOrganizationById(@PathVariable String id) {
         return ResponseEntity.ok(organizationService.getOrganizationById(id));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable String id, @RequestBody Organization org) {
-        organizationService.updateOrganization(id, org);
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> updateOrganizationPartially(@PathVariable String id,
+            @RequestBody Map<String, Object> updates) {
+        organizationService.updateOrganizationPartially(id, updates);
         return ResponseEntity.noContent().build();
     }
+    
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Void> updatePartially(@PathVariable String id, @RequestBody Map<String, Object> updates) {
-        organizationService.updateOrganizationPartially(id, updates);
-            return ResponseEntity.noContent().build();
+    @PostMapping("/branch")
+    public ResponseEntity<ApiResponse<Organization>> updateOrganizationBranch(BranchRequest request) {
+        return ResponseEntity.ok(organizationService.updateBranches(request));
+    }
+
+    @GetMapping("/branch-all")
+    public ResponseEntity<ApiResponse<Branch[]>> getAllBranches(String userId) {
+        return ResponseEntity.ok(organizationService.getAllBranches(userId));
+    }
+
+    @GetMapping("/branch/{userId}/{organizationId}")
+    public ResponseEntity<ApiResponse<Branch>> getBranchById(String userId, String organizationId) {
+        return ResponseEntity.ok(organizationService.getBranchById(userId, organizationId));
     }
 
     @DeleteMapping("/{id}")
