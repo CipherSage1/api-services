@@ -12,7 +12,7 @@ JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
 JWT_EXPIRATION_MINUTES = int(os.getenv("JWT_EXPIRATION_MINUTES", 60))
 PASSWORD_HASH_KEY = os.getenv("PASSWORD_HASH_KEY")
-API_KEY = os.getenv("API_KEY")
+API_KEY = os.getenv("API_KEY", "").strip()
 ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 ORGANIZATION_URL = os.getenv("ORGANIZATION_URL")
 

@@ -6,7 +6,7 @@ public enum ShipmentType {
     Standard("Standard", null),
     Express("Express", null),
     Overnight("Overnight", null),
-    SameDay("SameDay", null);
+    NextDay("NextDay", null);
 
     private final String displayName;
     private final BigDecimal price;

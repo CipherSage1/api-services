@@ -51,7 +51,8 @@ class AuthMiddleware(BaseHTTPMiddleware):
         for protected_path, protected_method in API_KEY_PROTECTED_PATHS:
             if path.startswith(protected_path) and method == protected_method:
                 api_key = request.headers.get("Api_Key")
-                if not api_key or api_key != API_KEY:
+                print("Api_Key: ", api_key == API_KEY) 
+                if not api_key or not API_KEY or api_key.strip() != API_KEY.strip():
                     return JSONResponse(
                         status_code=HTTP_403_FORBIDDEN,
                         content={
