@@ -39,11 +39,32 @@ def create_user(user: User) -> BaseAPIResponse:
     print("✅ Successfully created user: ", data)
     return success_response(
       message="✅ Successfully created user!",
-      data={"user":  data}
+      data=data
     )
  except requests.exceptions.RequestException as e:
     print("❌ Error creating user: ", str(e))
     return get_error_response(502)
+ 
+def create_user_agent(user: User) -> BaseAPIResponse:
+  try:
+    user.role = Role.AGENT 
+    response = requests.post(baseUrl+"/users", json=user.model_dump(mode="json"))
+    if(response.status_code > 299):
+      return get_error_response(response.status_code)
+    
+    response.raise_for_status()
+    data = response.json()
+    print("✅ Successfully created user: ", data)
+    return success_response(
+      message="✅ Successfully created user!",
+      data=data
+    )
+  except requests.exceptions.RequestException as e:
+    print("❌ Error fetching user: ", str(e))
+    return get_error_response(502)
+  except Exception as e:
+    print("❌ Internal server error occured",str(e))
+    return get_error_response(500)
 
 def get_user_by_id(userId: str) -> BaseAPIResponse:
   try:

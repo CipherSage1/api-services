@@ -14,7 +14,7 @@ class ShipmentType(str, Enum):
     STANDARD = "Standard"
     EXPRESS = "Express"
     OVERNIGHT = "Overnight"
-    SAMEDAY = "SameDay"
+    SAMEDAY = "NextDay"
 
 class DeliveryLocation(BaseModel):
     longitude: float

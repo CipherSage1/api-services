@@ -7,9 +7,10 @@ class Location(BaseModel):
     longitude: float
     latitude: float
     name: str
+    branchId:Optional[str] = None
 
 class Role(str, Enum):
-    ADMIN = "System Admin"
+    ADMIN = "Admin"
     DEALER = "Dealer"
     AGENT = "Agent"
     USER = "User"

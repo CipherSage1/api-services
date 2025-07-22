@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import com.organization.sage.model.LogType;
+import com.organization.sage.utility.Logger;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -39,6 +42,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         for (ProtectedPath protectedPath : PROTECTED_PATHS) {
             if (path.startsWith(protectedPath.path()) && method.equalsIgnoreCase(protectedPath.method())) {
                 String apiKey = request.getHeader("Api_Key");
+                Logger.print("apiKey: "+apiKey, LogType.ERROR);
                 String jsonResponse = "{"
                 + "\"status\": 403,"
                 + "\"message\": \"Unauthorized. Access to resource denied!\","
