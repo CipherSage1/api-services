@@ -15,11 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.organization.sage.model.ApiResponse;
+import com.organization.sage.model.LogType;
 import com.organization.sage.model.organisation.Branch;
 import com.organization.sage.model.organisation.BranchRequest;
 import com.organization.sage.model.organisation.Organization;
 import com.organization.sage.model.organisation.PricingRequest;
 import com.organization.sage.service.organization.OrganizationService;
+import com.organization.sage.utility.Logger;
 
 @RestController
 @RequestMapping("/api/internal/organizations")
@@ -60,7 +62,8 @@ public class OrganizationController {
     
 
     @PostMapping("/branch")
-    public ResponseEntity<ApiResponse<Organization>> updateOrganizationBranch(BranchRequest request) {
+    public ResponseEntity<ApiResponse<Organization>> updateOrganizationBranch(@RequestBody BranchRequest request) {
+        Logger.print("BranchRequest: "+request.toString(), LogType.ERROR);
         return ResponseEntity.ok(organizationService.updateBranches(request));
     }
 

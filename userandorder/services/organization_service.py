@@ -2,7 +2,7 @@ import json
 import requests
 from fastapi.encoders import jsonable_encoder
 
-from userandorder.core.config import ORGANIZATION_URL
+from userandorder.core.config import API_KEY, ORGANIZATION_URL
 from userandorder.error.error_handler import get_error_response
 from userandorder.models.organisation.branch_request import BranchRequest
 from userandorder.models.organisation.organization import Organization
@@ -16,7 +16,9 @@ from starlette.status import HTTP_200_OK, HTTP_201_CREATED
 
 def create_organization(organization: Organization) -> BaseAPIResponse:
     try:
-        response = requests.post(f"{ORGANIZATION_URL}/api/internal/organizations", json=organization.model_dump())
+        response = requests.post(f"{ORGANIZATION_URL}/api/internal/organizations", json=organization.model_dump(), headers={
+            "Api_Key": API_KEY
+        })
         if response.status_code > 299:
             api_error = BaseAPIResponse(**json.loads(response.content.decode()))
             print("❌ Error creating organization: ",api_error.message)
@@ -45,8 +47,9 @@ def create_organization(organization: Organization) -> BaseAPIResponse:
 def update_pricing(priceRequest: PricingRequest) -> BaseAPIResponse:
     try:
         payload = jsonable_encoder(priceRequest, by_alias=True)
-
-        response = requests.post(f"{ORGANIZATION_URL}/api/internal/organizations/pricing", json=payload)
+        response = requests.post(f"{ORGANIZATION_URL}/api/internal/organizations/pricing", json=payload, headers={
+            "Api_Key": API_KEY
+        })
         if response.status_code > 299:
             api_error = BaseAPIResponse(**json.loads(response.content.decode()))
             print("❌ Error updating organization pricing: ", api_error.message)
@@ -59,7 +62,6 @@ def update_pricing(priceRequest: PricingRequest) -> BaseAPIResponse:
             data=api_data.data,
             status_code=HTTP_200_OK
         )
-
     except requests.exceptions.RequestException as e:
         print("❌ Error updating organization pricing: ", str(e))
         return get_error_response(502)
@@ -70,7 +72,10 @@ def update_pricing(priceRequest: PricingRequest) -> BaseAPIResponse:
 def update_branches(branchRequest: BranchRequest) -> BaseAPIResponse:
     try:
         payload = jsonable_encoder(branchRequest, by_alias=True)
-        response = requests.post(f"{ORGANIZATION_URL}/api/internal/organizations/branch", json=payload)
+        print("Payload: ", payload)
+        response = requests.post(f"{ORGANIZATION_URL}/api/internal/organizations/branch", json=payload, headers={
+            "Api_Key": API_KEY
+        })
         if response.status_code > 299:
             api_error = BaseAPIResponse(**json.loads(response.content.decode()))
             print("❌ Error updating organization pricing: ", api_error.message)
@@ -80,7 +85,7 @@ def update_branches(branchRequest: BranchRequest) -> BaseAPIResponse:
         print("✅ Organization pricing updated successfully: ", data.data)
         return success_response(
             message="✅ Organization branch updated successfully!",
-            data=data,
+            data=data.data,
             status_code=HTTP_200_OK
         )
     except requests.exceptions.RequestException as e:
@@ -89,11 +94,12 @@ def update_branches(branchRequest: BranchRequest) -> BaseAPIResponse:
     except Exception as e:
         print("❌ Unexpected error updating organization pricing: ", str(e))
         return get_error_response(500, "❌ Unexpected error occurred while updating organization branches.")
-    
 
 def get_all_branches(userId: str) -> BaseAPIResponse:
     try:
-        response = requests.get("/api/internal/organizations/branch-all/"+userId)
+        response = requests.get("/api/internal/organizations/branch-all/"+userId, headers={
+            "Api_Key": API_KEY
+        })
         if response.status_code > 299:
             api_error = BaseAPIResponse(**json.loads(response.content.decode()))
             print("❌ Error updating organization pricing: ", api_error.message)
@@ -114,7 +120,9 @@ def get_all_branches(userId: str) -> BaseAPIResponse:
     
 def get_branch_by_id(userId: str, orgId: str) -> BaseAPIResponse:
     try:
-        response = requests.get("/api/internal/organizations/branch/"+userId+"/"+orgId)
+        response = requests.get("/api/internal/organizations/branch/"+userId+"/"+orgId, headers={
+            "Api_Key": API_KEY
+        })
         if response.status_code > 299:
             api_error = BaseAPIResponse(**json.loads(response.content.decode()))
             print("❌ Error updating organization pricing: ", api_error.message)

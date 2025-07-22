@@ -24,4 +24,13 @@ public class BranchRequest {
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
+
+    @Override
+    public String toString() {
+     return "BranchRequest{" +
+            "userId='" + userId + '\'' +
+            ", branch=" + branch +
+            '}';
+    }
 }

@@ -151,6 +151,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public ApiResponse<Organization> updateBranches(BranchRequest request) {
+        Logger.print("BranchRequest: "+request.toString(), LogType.ERROR);
         if (request.getUserId() != null) {
             ResponseEntity<Organization[]> existingOrgsResponse = getCurrentOrganizations(request.getUserId());
             Organization[] existingOrgs = existingOrgsResponse.getBody();
