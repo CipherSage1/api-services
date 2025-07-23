@@ -31,7 +31,8 @@ def create_user(user: User) -> BaseAPIResponse:
     user.role = Role.DEALER
     response = requests.post(baseUrl+"/users", json=user.model_dump(mode="json"))
     if(response.status_code > 299):
-      return get_error_response(response.status_code)
+      print("Response: ", response.reason)
+      return get_error_response(response.status_code, response.reason)
 
     response.raise_for_status
     data = response.json()
